@@ -1,0 +1,36 @@
+Name: ${Name}
+Version: ${Version}
+Env: ${Env}
+HttpAddress: ${HttpAddress}
+Log:
+  Level: ${LogLevel}
+  Path: ${LogPath}
+  SaveDays: ${LogSaveDays}
+Mysql:
+  DataSourceName: ${MysqlDataSourceName}
+  ConnMaxLifeSecond: ${MysqlConnMaxLifeSecond}
+  MaxOpenConns: ${MysqlMaxOpenConns}
+  MaxIdleConns: ${MysqlMaxIdleConns}
+  SqlShow: ${MysqlSqlShow}
+Redis:
+  Addr: ${RedisAddr}
+  DB: ${RedisDB}
+  Password: ${RedisPassword}
+RuntimeDataPath: ${RuntimeDataPath}
+Jwt: 
+  Secret: ${JwtSecret}
+  ExpireHour: ${JwtExpireHour}
+SentinelConfigPath: ${SentinelConfigPath}
+Plugins:
+  -
+    Name: pprof
+    Setting: '${PluginsPprofSetting}'
+    Open: ${PluginsPprofOpen}
+  -
+    Name: prometheus
+    Setting: '${PluginsPrometheusSetting}'
+    Open: ${PluginsPrometheusOpen}
+  -
+    Name: captcha
+    Setting: '${PluginsCaptchaSetting}'
+    Open: ${PluginsCaptchaOpen}

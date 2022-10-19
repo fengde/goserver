@@ -1,0 +1,8 @@
+version: "v1.0"
+sentinel:
+  app:
+    name: server
+  log:
+    dir: ./log/sentinel
+    metric:
+      maxFileCount: 7
