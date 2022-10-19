@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"goserver/service/serviceJwt"
 	"net/http"
-	"server/service/serviceJwt"
 
 	"github.com/gin-gonic/gin"
 )

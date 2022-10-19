@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"server/global"
+	"goserver/global"
 
 	"github.com/fengde/gocommon/storex/mysqlx"
 )

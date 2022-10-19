@@ -1,8 +1,8 @@
 package service
 
 import (
-	"server/service/serviceDemo"
-	"server/service/serviceSentinel"
+	"goserver/service/serviceDemo"
+	"goserver/service/serviceSentinel"
 
 	"github.com/fengde/gocommon/logx"
 	"github.com/fengde/gocommon/taskx"

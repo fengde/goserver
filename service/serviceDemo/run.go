@@ -1,7 +1,7 @@
 package serviceDemo
 
 import (
-	"server/global"
+	"goserver/global"
 	"time"
 
 	"github.com/fengde/gocommon/logx"

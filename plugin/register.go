@@ -1,9 +1,9 @@
 package plugin
 
 import (
-	"server/plugin/captcha"
-	"server/plugin/pprof"
-	"server/plugin/prometheus"
+	"goserver/plugin/captcha"
+	"goserver/plugin/pprof"
+	"goserver/plugin/prometheus"
 )
 
 // 新增的插件，都需要在这里注册登记

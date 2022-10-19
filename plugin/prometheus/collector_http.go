@@ -1,7 +1,7 @@
 package prometheus
 
 import (
-	"server/service/serviceHttp"
+	"goserver/service/serviceHttp"
 
 	_prometheus "github.com/prometheus/client_golang/prometheus"
 )

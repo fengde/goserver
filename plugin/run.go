@@ -2,9 +2,9 @@ package plugin
 
 import (
 	"fmt"
+	"goserver/conf"
+	"goserver/global"
 	"reflect"
-	"server/conf"
-	"server/global"
 
 	"github.com/fengde/gocommon/jsonx"
 	"github.com/fengde/gocommon/logx"

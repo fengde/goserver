@@ -2,8 +2,8 @@ package global
 
 import (
 	"flag"
-	"server/conf"
-	"server/consts"
+	"goserver/conf"
+	"goserver/consts"
 	"time"
 
 	"github.com/fengde/gocommon/confx"

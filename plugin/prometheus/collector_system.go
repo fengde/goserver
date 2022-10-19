@@ -1,7 +1,7 @@
 package prometheus
 
 import (
-	"server/global"
+	"goserver/global"
 
 	"github.com/fengde/gocommon/timex"
 	_prometheus "github.com/prometheus/client_golang/prometheus"

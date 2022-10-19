@@ -1,7 +1,7 @@
 package serviceJwt
 
 import (
-	"server/global"
+	"goserver/global"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/fengde/gocommon/errorx"

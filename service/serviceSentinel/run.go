@@ -1,7 +1,7 @@
 package serviceSentinel
 
 import (
-	"server/global"
+	"goserver/global"
 
 	sentinel "github.com/alibaba/sentinel-golang/api"
 )

@@ -1,8 +1,8 @@
 package router
 
 import (
-	"server/http/handler"
-	"server/http/middleware"
+	"goserver/http/handler"
+	"goserver/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )

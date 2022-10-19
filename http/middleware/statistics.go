@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"server/service/serviceHttp"
+	"goserver/service/serviceHttp"
 
 	"github.com/gin-gonic/gin"
 )

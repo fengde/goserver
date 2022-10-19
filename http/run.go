@@ -2,10 +2,10 @@ package http
 
 import (
 	"context"
+	"goserver/global"
+	"goserver/http/router"
 	"log"
 	"net/http"
-	"server/global"
-	"server/http/router"
 
 	"github.com/fengde/gocommon/logx"
 	"github.com/gin-gonic/gin"

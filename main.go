@@ -1,13 +1,13 @@
 package main
 
 import (
+	"goserver/global"
+	"goserver/http"
+	"goserver/plugin"
+	"goserver/service"
+	"goserver/test"
 	"os"
 	"os/signal"
-	"server/global"
-	"server/http"
-	"server/plugin"
-	"server/service"
-	"server/test"
 	"syscall"
 	"time"
 

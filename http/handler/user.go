@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"server/global"
-	"server/service/serviceJwt"
+	"goserver/global"
+	"goserver/service/serviceJwt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
