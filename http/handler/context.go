@@ -22,6 +22,17 @@ type Context struct {
 	*gin.Context
 }
 
+// 返回http请求id
+func (c *Context) RequestId() string {
+	requestId, _ := c.Get(RequestIdName)
+	return fmt.Sprintf("%v", requestId)
+}
+
+// 返回日志ctx
+func (c *Context) LogCtx() context.Context {
+	return logx.NewCtx(c.RequestId())
+}
+
 // 返回请求id
 func GetReqeustId(ginc *gin.Context) string {
 	requestId := ginc.GetString(RequestIdName)
@@ -38,7 +49,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 		defer func() {
 			if r := recover(); r != nil {
 				logx.ErrorWithCtx(logx.NewCtx(GetReqeustId(ginc)), r)
-				_out(ginc, http.StatusInternalServerError, "fail", "internal server error", nil)
+				_out(ginc, http.StatusInternalServerError, "failed", "internal server error", nil)
 			}
 		}()
 
@@ -46,9 +57,10 @@ func WrapF(f interface{}) gin.HandlerFunc {
 		argNum := fType.NumIn()
 		args := make([]reflect.Value, argNum)
 
-		args[0] = reflect.ValueOf(&Context{
+		ctx := &Context{
 			Context: ginc,
-		})
+		}
+		args[0] = reflect.ValueOf(ctx)
 
 		for i := 1; i < argNum; i++ {
 			paramPtr := fType.In(i)
@@ -57,7 +69,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 				argi := reflect.New(paramPtr.Elem()).Interface()
 				// 解析参数到入参结构体
 				if err := _params(ginc, argi); err != nil {
-					_out(ginc, http.StatusOK, "fail", err.Error(), nil)
+					_out(ginc, http.StatusOK, "failed", err.Error(), nil)
 					return
 				}
 				// 移除入参string的首尾空格
@@ -65,7 +77,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 
 				// 入参tag规则校验
 				if err := _paramsValidate(argi); err != nil {
-					_out(ginc, http.StatusOK, "fail", err.Error(), nil)
+					_out(ginc, http.StatusOK, "failed", err.Error(), nil)
 					return
 				}
 
@@ -73,7 +85,40 @@ func WrapF(f interface{}) gin.HandlerFunc {
 			}
 		}
 
-		reflect.ValueOf(f).Call(args)
+		// 对handler的返回参数进行封装返回：
+		// 1) 返回 error
+		// 2) 返回 *struct, error
+		reponseArgs := reflect.ValueOf(f).Call(args)
+
+		var responseData, responseErr *reflect.Value
+
+		switch {
+		case len(reponseArgs) == 1:
+			responseErr = &reponseArgs[0]
+		case len(reponseArgs) == 2:
+			responseData, responseErr = &reponseArgs[0], &reponseArgs[1]
+		}
+
+		if responseData != nil && responseData.Kind() != reflect.Ptr {
+			panic("handler return invalied")
+		}
+
+		if responseErr != nil && responseErr.Type().Name() != "error" {
+			panic("handler return invalied")
+		}
+
+		if responseErr != nil {
+			if responseErr.IsNil() {
+				if responseData != nil {
+					_out(ginc, http.StatusOK, "success", "", responseData.Interface())
+				} else {
+					_out(ginc, http.StatusOK, "success", "", nil)
+				}
+			} else {
+				logx.ErrorWithCtx(ctx.LogCtx(), "error trace: ", errorx.GetStack(responseErr.Interface().(error)))
+				_out(ginc, http.StatusOK, "failed", responseErr.MethodByName("Error").Call(nil)[0].String(), nil)
+			}
+		}
 	}
 }
 
@@ -128,43 +173,4 @@ func _trim(r any) {
 func _paramsValidate(r any) error {
 	_, err := govalidator.ValidateStruct(r)
 	return err
-}
-
-// 返回普通文本
-func (c *Context) OutString(code int, text string) {
-	c.Set("out", text)
-	c.String(http.StatusOK, text)
-}
-
-// 成功返回
-func (c *Context) OutSuccess(data any) {
-	c.Out("success", "", data)
-}
-
-// 失败返回
-func (c *Context) OutFail(err error) {
-	c.Out("fail", err.Error(), map[string]any{})
-	// 集中打印错误堆栈
-	logx.ErrorWithCtx(c.LogCtx(), "OutFail. ", errorx.GetStack(err))
-}
-
-// 提示重新登录返回
-func (c *Context) OutRelogin() {
-	c.Out("login", "need login", map[string]any{})
-}
-
-// 通用返回
-func (c *Context) Out(status string, message string, data any) {
-	_out(c.Context, http.StatusOK, status, message, data)
-}
-
-// 返回http请求id
-func (c *Context) RequestId() string {
-	requestId, _ := c.Get(RequestIdName)
-	return fmt.Sprintf("%v", requestId)
-}
-
-// 返回日志ctx
-func (c *Context) LogCtx() context.Context {
-	return logx.NewCtx(c.RequestId())
 }

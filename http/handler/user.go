@@ -18,7 +18,7 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
-func Login(c *Context, r *LoginRequest) {
+func Login(c *Context, r *LoginRequest) (*LoginResponse, error) {
 	var expiresAt int64 = 0
 	if global.Conf.Jwt.ExpireHour > 0 {
 		expiresAt = time.Now().Add(time.Duration(global.Conf.Jwt.ExpireHour) * time.Hour).Unix()
@@ -32,21 +32,22 @@ func Login(c *Context, r *LoginRequest) {
 		},
 	})
 	if err != nil {
-		c.OutFail(err)
-		return
+		return nil, err
 	}
 
-	c.OutSuccess(LoginResponse{
+	return &LoginResponse{
 		Token: token,
-	})
+	}, nil
 }
 
 type InfoResponse struct {
 	UserName string `json:"user_name"`
+	Age      int64  `json:"age"`
 }
 
-func Info(c *Context) {
-	c.OutSuccess(map[string]interface{}{
-		"user_name": c.GetString("user_name"),
-	})
+func Info(c *Context) (*InfoResponse, error) {
+	return &InfoResponse{
+		UserName: c.GetString("user_name"),
+		Age:      11,
+	}, nil
 }

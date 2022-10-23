@@ -1,9 +1,7 @@
 package handler
 
-import (
-	"net/http"
-)
+import "net/http"
 
 func Health(c *Context) {
-	c.OutString(http.StatusOK, "success")
+	c.String(http.StatusOK, "i am ok")
 }

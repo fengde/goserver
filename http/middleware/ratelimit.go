@@ -29,7 +29,7 @@ func IPRatelimit(redisClient *redisx.Client, limit int, slidingWindow time.Durat
 
 		if len(reqs) >= limit {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-				"status":  "fail",
+				"status":  "failed",
 				"message": "too many request",
 				"data":    map[string]interface{}{},
 			})

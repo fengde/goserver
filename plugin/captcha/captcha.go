@@ -11,18 +11,18 @@ type CaptchaImageResponse struct {
 	CaptchaLink string `json:"captcha_link"`
 }
 
-func CaptchaImage(c *handler.Context) {
+func CaptchaImage(c *handler.Context) (*CaptchaImageResponse, error) {
 	id, link := captchax.NewCaptchaImage(length)
-	c.OutSuccess(CaptchaImageResponse{
+	return &CaptchaImageResponse{
 		CaptchaId:   id,
 		CaptchaLink: link,
-	})
+	}, nil
 }
 
-func CaptchaAudio(c *handler.Context) {
+func CaptchaAudio(c *handler.Context) (*CaptchaImageResponse, error) {
 	id, link := captchax.NewCaptchaAudio(length)
-	c.OutSuccess(CaptchaImageResponse{
+	return &CaptchaImageResponse{
 		CaptchaId:   id,
 		CaptchaLink: link,
-	})
+	}, nil
 }
