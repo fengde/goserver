@@ -6,7 +6,7 @@ require (
 	github.com/alibaba/sentinel-golang v1.0.4
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/fengde/gocommon v1.0.51
+	github.com/fengde/gocommon v1.0.55
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.4

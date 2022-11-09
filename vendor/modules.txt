@@ -45,7 +45,7 @@ github.com/dgryski/go-rendezvous
 # github.com/evalphobia/logrus_sentry v0.8.2
 ## explicit
 github.com/evalphobia/logrus_sentry
-# github.com/fengde/gocommon v1.0.51
+# github.com/fengde/gocommon v1.0.55
 ## explicit; go 1.18
 github.com/fengde/gocommon/captchax
 github.com/fengde/gocommon/confx
