@@ -1,6 +1,7 @@
 package global
 
 import (
+	"context"
 	"flag"
 	"goserver/conf"
 	"goserver/consts"
@@ -21,6 +22,7 @@ var (
 	Cache     *redisx.Client
 	exit      = make(chan int)
 	StartUnix int64
+	Locker    *redisx.LockerV2
 )
 
 func Init() error {
@@ -51,6 +53,8 @@ func Init() error {
 		return err
 	}
 
+	Locker = redisx.NewLockerV2(Cache)
+
 	return nil
 }
 
@@ -69,8 +73,20 @@ func IsOnlineEnv() bool {
 	return Conf.Env == consts.ENV_ONLINE
 }
 
-// 系统是否还在运行
-func Continue() bool {
+// 系统是否还在运行，带sleep
+func Continue(sleep ...time.Duration) bool {
+	if len(sleep) > 0 {
+		ctx, cancel := context.WithTimeout(context.Background(), sleep[0])
+		defer cancel()
+
+		select {
+		case <-exit:
+			return false
+		case <-ctx.Done():
+			return true
+		}
+	}
+
 	select {
 	case <-exit:
 		return false

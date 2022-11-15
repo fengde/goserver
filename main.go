@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/fengde/gocommon/logx"
 	"github.com/fengde/gocommon/safex"
@@ -20,9 +19,10 @@ func main() {
 		panic(err)
 	}
 
-	service.Init()
+	svc := service.NewService()
+	svc.Run()
 
-	defer safex.Recover(global.Exist, service.WaitExit, func() {
+	defer safex.Recover(global.Exist, svc.Close, func() {
 		logx.Info("bye bye")
 	})
 
@@ -37,8 +37,6 @@ func main() {
 	if err := http.Shutdown(); err != nil {
 		logx.Error(err)
 	}
-
-	time.Sleep(time.Second)
 }
 
 func listenSignal() {
