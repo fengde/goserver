@@ -6,14 +6,14 @@ import (
 	"github.com/fengde/gocommon/taskx"
 )
 
-var tasks = taskx.NewTaskGroup()
+var tg = taskx.NewTaskGroup()
 
 // 这里开机启动运行服务
 func Run() {
-	tasks.Run(serviceSentinel.Run)
+	tg.Run(serviceSentinel.Run)
 }
 
 // 统一等待结束
 func Shutdown() {
-	tasks.Wait()
+	tg.Wait()
 }
