@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"goserver/http/handler"
+	"goserver/api/handler"
 	"io/ioutil"
 	"strings"
 	"time"

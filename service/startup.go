@@ -1,4 +1,4 @@
-package startup
+package service
 
 import (
 	"goserver/service/serviceSentinel"
@@ -21,7 +21,7 @@ func (p *Startup) Run() {
 	p.g.Run(serviceSentinel.Run)
 }
 
-// 统一等待关闭
-func (p *Startup) Close() {
+// 统一等待结束
+func (p *Startup) Shutdown() {
 	p.g.Wait()
 }

@@ -1,9 +1,9 @@
-package http
+package api
 
 import (
 	"context"
+	"goserver/api/router"
 	"goserver/global"
-	"goserver/http/router"
 	"log"
 	"net/http"
 
@@ -29,8 +29,8 @@ func Run() {
 	}
 }
 
-func Shutdown() error {
-	return srv.Shutdown(context.Background())
+func Shutdown() {
+	srv.Shutdown(context.Background())
 }
 
 func GetGinEngine() *gin.Engine {

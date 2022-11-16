@@ -1,10 +1,10 @@
 package main
 
 import (
+	"goserver/api"
 	"goserver/global"
-	"goserver/http"
 	"goserver/plugin"
-	"goserver/startup"
+	"goserver/service"
 	"goserver/test"
 	"os"
 	"os/signal"
@@ -19,14 +19,10 @@ func main() {
 		panic(err)
 	}
 
-	st := startup.NewStartup()
+	st := service.NewStartup()
 	st.Run()
 
-	defer safex.Recover(global.Exist, st.Close, func() {
-		logx.Info("bye bye")
-	})
-
-	safex.Go(http.Run)
+	safex.Go(api.Run)
 
 	safex.Go(plugin.Run)
 
@@ -34,16 +30,12 @@ func main() {
 		safex.Go(test.Run)
 	}
 
-	listenSignal()
+	defer safex.Recover(api.Shutdown, global.Shutdown, st.Shutdown, func() {
+		logx.Info("bye")
+	})
 
-	if err := http.Shutdown(); err != nil {
-		logx.Error(err)
-	}
-}
-
-func listenSignal() {
 	term := make(chan os.Signal)
 	signal.Notify(term, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGINT)
 
-	logx.Info("get signal:", <-term)
+	logx.Info("signal:", <-term)
 }

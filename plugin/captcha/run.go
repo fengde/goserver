@@ -1,8 +1,8 @@
 package captcha
 
 import (
-	"goserver/http"
-	"goserver/http/handler"
+	http "goserver/api"
+	"goserver/api/handler"
 
 	"github.com/fengde/gocommon/captchax"
 	"github.com/gin-gonic/gin"

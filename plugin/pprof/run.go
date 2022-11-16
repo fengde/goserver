@@ -1,7 +1,7 @@
 package pprof
 
 import (
-	"goserver/http"
+	http "goserver/api"
 	"strings"
 
 	"github.com/fengde/gocommon/filex"

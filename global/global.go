@@ -96,6 +96,6 @@ func Continue(sleep ...time.Duration) bool {
 }
 
 // 设置系统关闭
-func Exist() {
+func Shutdown() {
 	close(exit)
 }

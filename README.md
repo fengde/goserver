@@ -20,3 +20,10 @@ go env -w GOPROXY=https://goproxy.cn,direct
 二进制打包：
 ./control.sh pack 
 ```
+
+## 日常开发
+```
+
+http api
+
+```

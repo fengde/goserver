@@ -1,4 +1,4 @@
-package startup
+package service
 
 import (
 	"goserver/global"
