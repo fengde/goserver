@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"goserver/conf"
 	"goserver/global"
 	"reflect"
 
@@ -29,7 +28,7 @@ func Run() {
 
 func start() {
 	for i := range global.Conf.Plugins {
-		func(plg conf.Plugin) {
+		func(plg global.Plugin) {
 			if plg.Open {
 				if handler, ok := registers[plg.Name]; ok {
 					handlerType := reflect.TypeOf(reflect.ValueOf(handler).Interface())

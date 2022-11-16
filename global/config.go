@@ -1,4 +1,4 @@
-package conf
+package global
 
 type Config struct {
 	Name        string
