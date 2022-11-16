@@ -19,18 +19,17 @@ func main() {
 		panic(err)
 	}
 
-	st := service.NewStartup()
-	st.Run()
-
-	safex.Go(api.Run)
+	safex.Go(service.Run)
 
 	safex.Go(plugin.Run)
+
+	safex.Go(api.Run)
 
 	if global.IsDevEnv() {
 		safex.Go(test.Run)
 	}
 
-	defer safex.Recover(global.Shutdown, st.Shutdown, api.Shutdown, func() {
+	defer safex.Recover(global.Shutdown, service.Shutdown, api.Shutdown, func() {
 		logx.Info("bye")
 	})
 
