@@ -30,7 +30,7 @@ func main() {
 		safex.Go(test.Run)
 	}
 
-	defer safex.Recover(api.Shutdown, global.Shutdown, st.Shutdown, func() {
+	defer safex.Recover(global.Shutdown, st.Shutdown, api.Shutdown, func() {
 		logx.Info("bye")
 	})
 
