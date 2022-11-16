@@ -3,6 +3,9 @@ package plugin
 import (
 	"fmt"
 	"goserver/global"
+	"goserver/plugin/captcha"
+	"goserver/plugin/pprof"
+	"goserver/plugin/prometheus"
 	"reflect"
 
 	"github.com/fengde/gocommon/jsonx"
@@ -13,16 +16,19 @@ import (
 var registers = map[string]any{}
 
 // 注册插件
-func store(name string, handler any) {
-	if _, ok := registers[name]; ok {
+func register(name string, handler any) {
+	if _, ok := registers[name]; !ok {
 		panic("plugin register again!")
 	}
 	registers[name] = handler
 }
 
-// 启动运行
+// 启动运行, 新增的插件，都需要在这里注册登记
 func Run() {
-	register()
+	register("pprof", pprof.Run)
+	register("prometheus", prometheus.Run)
+	register("captcha", captcha.Run)
+
 	start()
 }
 

@@ -2,7 +2,7 @@ package captcha
 
 import (
 	http "goserver/api"
-	"goserver/api/handler"
+	"goserver/api/router"
 
 	"github.com/fengde/gocommon/captchax"
 	"github.com/gin-gonic/gin"
@@ -16,10 +16,11 @@ func Run(setting *Setting) {
 		length = 4
 	}
 	engine := http.GetGinEngine()
-	// 生成图形验证码
-	engine.POST("/api/captcha/image", handler.WrapF(CaptchaImage))
-	// 生成音频验证码
-	engine.POST("/api/captcha/audio", handler.WrapF(CaptchaAudio))
 	// 访问验证码资源
 	engine.GET("/captcha/*path", gin.WrapH(captchax.LinkHandle()))
+	// 生成图形验证码
+	router.POST(&engine.RouterGroup, "/api/captcha/image", CaptchaImage)
+	// 生成音频验证码
+	router.POST(&engine.RouterGroup, "/api/captcha/audio", CaptchaAudio)
+
 }
