@@ -30,7 +30,9 @@ func main() {
 
 	safex.Go(plugin.Run)
 
-	safex.Go(test.Start)
+	if global.IsDevEnv() {
+		safex.Go(test.Run)
+	}
 
 	listenSignal()
 
