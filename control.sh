@@ -189,6 +189,14 @@ case $1 in
   status)
     status
     ;;
+  help)
+    ;;
+  --help)
+    ;;
+  -help)
+    ;;   
+  -h)
+    ;;        
   *)
     debug
     ;;

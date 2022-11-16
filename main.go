@@ -4,7 +4,7 @@ import (
 	"goserver/global"
 	"goserver/http"
 	"goserver/plugin"
-	"goserver/service"
+	"goserver/startup"
 	"goserver/test"
 	"os"
 	"os/signal"
@@ -19,10 +19,10 @@ func main() {
 		panic(err)
 	}
 
-	svc := service.NewService()
-	svc.Run()
+	st := startup.NewStartup()
+	st.Run()
 
-	defer safex.Recover(global.Exist, svc.Close, func() {
+	defer safex.Recover(global.Exist, st.Close, func() {
 		logx.Info("bye bye")
 	})
 
