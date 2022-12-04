@@ -15,7 +15,7 @@ func AccessLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 
-		ctx := logx.NewCtx(handler.GetReqeustId(c))
+		ctx := handler.GetCtx(c)
 
 		// start
 		{

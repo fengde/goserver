@@ -17,7 +17,7 @@ var registers = map[string]any{}
 
 // 注册插件
 func register(name string, handler any) {
-	if _, ok := registers[name]; !ok {
+	if _, ok := registers[name]; ok {
 		panic("plugin register again!")
 	}
 	registers[name] = handler

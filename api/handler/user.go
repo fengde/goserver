@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/opentracing/opentracing-go"
 )
 
 type LoginRequest struct {
@@ -19,6 +20,7 @@ type LoginResponse struct {
 }
 
 func Login(c *Context, r *LoginRequest) (*LoginResponse, error) {
+
 	var expiresAt int64 = 0
 	if global.Conf.Jwt.ExpireHour > 0 {
 		expiresAt = time.Now().Add(time.Duration(global.Conf.Jwt.ExpireHour) * time.Hour).Unix()
@@ -46,6 +48,10 @@ type InfoResponse struct {
 }
 
 func Info(c *Context) (*InfoResponse, error) {
+	ctx := c.GetCtx()
+	span, _ := opentracing.StartSpanFromContext(ctx, "user.Info")
+	span.Finish()
+
 	return &InfoResponse{
 		UserName: c.GetString("user_name"),
 		Age:      11,

@@ -21,6 +21,12 @@ Jwt:
   Secret: ${JwtSecret}
   ExpireHour: ${JwtExpireHour}
 SentinelConfigPath: ${SentinelConfigPath}
+Jaeger:
+  Way: ${JaegerWay}
+  Endpoint: ${JaegerEndpoint}
+  Token: ${JaegerToken}
+  SamplerType: ${JaegerSamplerType}
+  SamplerParam: ${JaegerSamplerParam}
 Plugins:
   -
     Name: pprof

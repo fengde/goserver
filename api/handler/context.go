@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
@@ -11,36 +10,21 @@ import (
 	"github.com/fengde/gocommon/errorx"
 	"github.com/fengde/gocommon/jsonx"
 	"github.com/fengde/gocommon/logx"
-	"github.com/fengde/gocommon/timex"
-	"github.com/fengde/gocommon/toolx"
 	"github.com/gin-gonic/gin"
 )
-
-const RequestIdName = "request_id"
 
 type Context struct {
 	*gin.Context
 }
 
-// 返回http请求id
-func (c *Context) RequestId() string {
-	requestId, _ := c.Get(RequestIdName)
-	return fmt.Sprintf("%v", requestId)
-}
-
 // 返回日志ctx
-func (c *Context) LogCtx() context.Context {
-	return logx.NewCtx(c.RequestId())
-}
-
-// 返回请求id
-func GetReqeustId(ginc *gin.Context) string {
-	requestId := ginc.GetString(RequestIdName)
-	if requestId == "" {
-		requestId = fmt.Sprintf("%v%s", timex.NowUnixNano(), toolx.NewNumberCode(4))
-		ginc.Set(RequestIdName, requestId)
+func (c *Context) GetCtx() context.Context {
+	otx, ok := c.Get("ctx")
+	if !ok {
+		return logx.NewCtx("unknow requestid")
 	}
-	return requestId
+
+	return otx.(context.Context)
 }
 
 // controller修饰器返回gin.HandlerFunc
@@ -48,7 +32,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 	return func(ginc *gin.Context) {
 		defer func() {
 			if r := recover(); r != nil {
-				logx.ErrorWithCtx(logx.NewCtx(GetReqeustId(ginc)), r)
+				logx.ErrorWithCtx(GetCtx(ginc), r)
 				_out(ginc, http.StatusInternalServerError, "failed", "internal server error", nil)
 			}
 		}()
@@ -115,7 +99,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 					_out(ginc, http.StatusOK, "success", "", nil)
 				}
 			} else {
-				logx.ErrorWithCtx(ctx.LogCtx(), "error trace: ", errorx.GetStack(responseErr.Interface().(error)))
+				logx.ErrorWithCtx(ctx.GetCtx(), "error trace: ", errorx.GetStack(responseErr.Interface().(error)))
 				_out(ginc, http.StatusOK, "failed", responseErr.MethodByName("Error").Call(nil)[0].String(), nil)
 			}
 		}
@@ -128,10 +112,10 @@ func _out(ginc *gin.Context, code int, status string, message string, data any) 
 		data = map[string]any{}
 	}
 	ginH := gin.H{
-		"status":      status,
-		"message":     message,
-		"data":        data,
-		RequestIdName: GetReqeustId(ginc),
+		"status":       status,
+		"message":      message,
+		"data":         data,
+		"x-request-id": ginc.GetString("x-request-id"),
 	}
 	ginc.Set("out", jsonx.MarshalToStringNoErr(ginH))
 	ginc.JSON(code, ginH)
@@ -173,4 +157,9 @@ func _trim(r any) {
 func _paramsValidate(r any) error {
 	_, err := govalidator.ValidateStruct(r)
 	return err
+}
+
+func GetCtx(ginc *gin.Context) context.Context {
+	t, _ := ginc.Get("ctx")
+	return t.(context.Context)
 }

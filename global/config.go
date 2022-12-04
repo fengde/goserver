@@ -25,10 +25,17 @@ type Config struct {
 	RuntimeDataPath string
 	Jwt             struct {
 		Secret     string
-		ExpireHour int64
+		ExpireHour int
 	}
 	SentinelConfigPath string
-	Plugins            []Plugin
+	Jaeger             struct {
+		Way          string
+		Endpoint     string
+		Token        string
+		SamplerType  string
+		SamplerParam float64
+	}
+	Plugins []Plugin
 }
 
 type Plugin struct {
