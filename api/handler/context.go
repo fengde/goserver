@@ -19,8 +19,8 @@ type Context struct {
 
 // 返回日志ctx
 func (c *Context) GetCtx() context.Context {
-	otx, ok := c.Get("ctx")
-	if !ok {
+	otx, exist := c.Get("ctx")
+	if !exist {
 		return logx.NewCtx("unknow requestid")
 	}
 
