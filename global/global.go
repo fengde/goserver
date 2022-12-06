@@ -39,16 +39,27 @@ func Init() error {
 			gin.SetMode(gin.ReleaseMode)
 		}
 	}
+	
+
+	logx.Info("mysql connecting...")
+
 	var err error
+
 	DB, err = mysqlx.NewCluster([]string{Conf.Mysql.DataSourceName}, time.Second*time.Duration(Conf.Mysql.ConnMaxLifeSecond), Conf.Mysql.MaxOpenConns, Conf.Mysql.MaxIdleConns, !Conf.Mysql.SqlShow)
 	if err != nil {
 		return err
 	}
 
+	logx.Info("mysql connected")
+
+	logx.Info("redis connecting...")
+
 	Cache, err = redisx.NewClient(Conf.Redis.Addr, Conf.Redis.DB, Conf.Redis.Password)
 	if err != nil {
 		return err
 	}
+
+	logx.Info("redis connected")
 
 	Locker = redisx.NewLockerV2(Cache)
 
