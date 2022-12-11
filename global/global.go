@@ -54,7 +54,6 @@ func Init() error {
 	}
 	// 初始化DB
 	{
-
 		logx.Info("mysql connecting...")
 
 		DB, err = gorm.Open(mysql.New(mysql.Config{
@@ -98,6 +97,10 @@ func Init() error {
 		}
 		// 如果DataSourceName不存在db，则会创建casbin库；如果存在db，则会自动创建casbin_rule表
 		Enforcer, err = casbin.NewEnforcer("conf/rbac_model.conf", a)
+		if err != nil {
+			return err
+		}
+		err = Enforcer.LoadPolicy()
 		if err != nil {
 			return err
 		}

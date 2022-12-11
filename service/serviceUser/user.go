@@ -6,8 +6,10 @@ import (
 	"goserver/global"
 	"goserver/model"
 
+	"github.com/fengde/gocommon/cachex/localcachex"
 	"github.com/fengde/gocommon/errorx"
-	"github.com/fengde/gocommon/logx"
+	"github.com/fengde/gocommon/jsonx"
+	"gorm.io/gorm"
 )
 
 type Role struct {
@@ -39,13 +41,16 @@ type UserInfo struct {
 	Name         string
 	RoleIds      []int64
 	RegisterTime string
+	Super        int64
 }
 
-func GetUserInfo(userId int64) UserInfo {
+func GetUserInfo(ctx context.Context, userId int64) (*UserInfo, error) {
 	var user model.User
 	if err := global.DB.Preload("UserRole").Where("id=?", userId).First(&user).Error; err != nil {
-		logx.Error(err)
-		return UserInfo{}
+		if err == gorm.ErrRecordNotFound {
+			return nil, gorm.ErrRecordNotFound
+		}
+		return nil, errorx.WithStack(err)
 	}
 
 	var roleIds []int64
@@ -53,12 +58,13 @@ func GetUserInfo(userId int64) UserInfo {
 		roleIds = append(roleIds, ur.Id)
 	}
 
-	return UserInfo{
+	return &UserInfo{
 		Id:           userId,
 		Name:         user.Name,
 		RegisterTime: user.CreateTime.String(),
 		RoleIds:      roleIds,
-	}
+		Super:        user.Super,
+	}, nil
 }
 
 // 绑定角色
@@ -93,4 +99,27 @@ func BindRole(ctx context.Context, userIds []int64, roleIds []int64, createUserI
 		}
 	}
 	return nil
+}
+
+// key=user_id, value=isSuper
+var superCache = localcachex.NewLocalCache()
+
+// 是否为超管
+func IsSuper(ctx context.Context, userId int64) bool {
+	if userId < 1 {
+		return false
+	}
+
+	isSuper, err := superCache.Get(jsonx.MarshalNoErr(userId))
+	if err != nil {
+		user, err := GetUserInfo(ctx, userId)
+		if err != nil {
+			return false
+		}
+		superCache.Set(jsonx.MarshalNoErr(userId), jsonx.MarshalNoErr(user.Super))
+
+		isSuper = jsonx.MarshalNoErr(user.Super)
+	}
+
+	return string(isSuper) == "1"
 }

@@ -21,9 +21,6 @@ func test1208_RBAC() {
 }
 
 func test1209_GORM() {
-	u := serviceUser.GetUserInfo(1)
-	logx.Info(jsonx.MarshalToStringNoErr(u))
-
 	roles, err := serviceUser.GetUserRoles(1)
 	logx.Info(jsonx.MarshalToStringNoErr(roles), err)
 }
