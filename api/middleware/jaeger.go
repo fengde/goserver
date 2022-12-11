@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"context"
+	"goserver/api/handler"
 	"goserver/global"
 	"net/http"
 
@@ -31,47 +31,42 @@ func getJaegerConfig() *jaegerConfig.Configuration {
 
 // apm监控
 func Jaeger() gin.HandlerFunc {
-	return func(c *gin.Context) {
+	return func(ginc *gin.Context) {
 		if global.Conf.Jaeger.Way == "http" {
 			tracer, closer, err := getJaegerConfig().NewTracer(jaegerConfig.Logger(jaeger.StdLogger))
 			if err != nil {
 				logx.Error(err)
-				c.Next()
+				ginc.Next()
 				return
 			}
 			defer closer.Close()
 
-			xRequestId := c.GetString(XRequestIdHeader)
+			xRequestId := handler.GetRequestId(ginc)
 
 			var parentSpan opentracing.Span
 
 			header := http.Header{}
-			header.Add(XRequestIdHeader, xRequestId)
+			header.Add(RequestIdHeader, xRequestId)
 
 			lastCtx, err := tracer.Extract(opentracing.HTTPHeaders, header)
 			if err != nil {
 				parentSpan = tracer.StartSpan(
 					"recv request",
-					opentracing.Tags{"http.url": c.Request.URL.Path, XRequestIdHeader: xRequestId},
+					opentracing.Tags{"http.url": ginc.Request.URL.Path, RequestIdHeader: xRequestId},
 				)
 			} else {
 				parentSpan = tracer.StartSpan(
 					"recv request",
-					opentracing.Tags{"url": c.Request.URL.Path, XRequestIdHeader: xRequestId},
+					opentracing.Tags{"http.url": ginc.Request.URL.Path, RequestIdHeader: xRequestId},
 					opentracing.ChildOf(lastCtx),
 				)
 			}
 
 			defer parentSpan.Finish()
 
-			oldCtx, exist := c.Get("ctx")
-			if exist {
-				c.Set("ctx", opentracing.ContextWithSpan(oldCtx.(context.Context), parentSpan))
-			} else {
-				c.Set("ctx", opentracing.ContextWithSpan(context.Background(), parentSpan))
-			}
+			ginc.Set("ctx", opentracing.ContextWithSpan(handler.GetCtx(ginc), parentSpan))
 
-			c.Next()
+			ginc.Next()
 		}
 	}
 }

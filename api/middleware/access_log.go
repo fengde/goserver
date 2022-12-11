@@ -12,49 +12,49 @@ import (
 )
 
 func AccessLog() gin.HandlerFunc {
-	return func(c *gin.Context) {
+	return func(ginc *gin.Context) {
 		start := time.Now()
 
-		ctx := handler.GetCtx(c)
+		ctx := handler.GetCtx(ginc)
 
 		// start
 		{
-			body, _ := c.GetRawData()
+			body, _ := ginc.GetRawData()
 			// 将原body塞回去
-			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			ginc.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
 			headers := []string{}
 
-			for k, v := range c.Request.Header {
+			for k, v := range ginc.Request.Header {
 				headers = append(headers, k+":"+v[0])
 			}
 
 			// 请求前
 			logx.InfofWithCtx(ctx, `收到请求 | %v | %v%v | %v | From: %v | Header: %v | Body: %v | Body size: %v bytes`,
-				c.Request.Method,
-				c.Request.Host,
-				c.Request.URL,
-				c.Request.Proto,
-				c.RemoteIP(),
+				ginc.Request.Method,
+				ginc.Request.Host,
+				ginc.Request.URL,
+				ginc.Request.Proto,
+				ginc.RemoteIP(),
 				strings.Join(headers, "\n"),
 				string(body),
 				len(body))
 		}
 
-		c.Next()
+		ginc.Next()
 
 		// end
 		{
 			headers := []string{}
 
-			for k, v := range c.Writer.Header() {
+			for k, v := range ginc.Writer.Header() {
 				headers = append(headers, k+":"+v[0])
 			}
 
-			out := c.GetString("out")
+			out := ginc.GetString("out")
 
 			logx.InfofWithCtx(ctx, `请求结束 | http status: %v | Header: %v | Body: %v | Body size: %v bytes | 请求耗时: %v`,
-				c.Writer.Status(), strings.Join(headers, "\n"), out, len(out), time.Since(start))
+				ginc.Writer.Status(), strings.Join(headers, "\n"), out, len(out), time.Since(start))
 
 		}
 	}

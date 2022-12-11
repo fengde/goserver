@@ -8,8 +8,7 @@ import (
 )
 
 type CustomClaims struct {
-	UserId   string `json:"user_id"`
-	UserName string `json:"user_name"`
+	UserId int64 `json:"user_id"`
 	jwt.StandardClaims
 }
 

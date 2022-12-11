@@ -15,9 +15,10 @@ var srv *http.Server
 var engine = gin.Default()
 
 func Run() {
-	router.Init(engine)
 
 	logx.Info("listen on", global.Conf.HttpAddress)
+
+	router.Init(engine)
 
 	srv = &http.Server{
 		Addr:    global.Conf.HttpAddress,

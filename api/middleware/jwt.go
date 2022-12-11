@@ -31,8 +31,6 @@ func Jwt() gin.HandlerFunc {
 		}
 
 		c.Set("user_id", jwtClaims.UserId)
-		c.Set("user_name", jwtClaims.UserName)
-
 		// 处理请求
 		c.Next()
 	}

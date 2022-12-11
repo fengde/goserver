@@ -9,17 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var XRequestIdHeader = "x-request-id"
+var RequestIdHeader = "request-id"
 
 func Enter() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		xRequestId := c.GetHeader(XRequestIdHeader)
-		if xRequestId == "" {
-			xRequestId = fmt.Sprintf("%v%s", timex.NowUnixNano(), toolx.NewNumberCode(4))
+		requestId := c.GetHeader(RequestIdHeader)
+		if requestId == "" {
+			requestId = fmt.Sprintf("%v%s", timex.NowUnixNano(), toolx.NewNumberCode(4))
 		}
 
-		c.Set(XRequestIdHeader, xRequestId)
-		c.Set("ctx", logx.NewCtx(xRequestId))
+		c.Set("request_id", requestId)
+		c.Set("ctx", logx.NewCtx(requestId))
 		c.Next()
 	}
 }

@@ -21,9 +21,9 @@ func main() {
 
 	safex.Go(service.Run)
 
-	safex.Go(plugin.Run)
-
 	safex.Go(api.Run)
+
+	safex.Go(plugin.Run)
 
 	if global.IsDevEnv() {
 		safex.Go(test.Run)

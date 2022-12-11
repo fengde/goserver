@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fengde/gocommon/storex/redisx"
+	"github.com/fengde/gocommon/redisx"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 )

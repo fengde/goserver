@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/opentracing/opentracing-go"
 )
 
 type LoginRequest struct {
@@ -27,8 +26,7 @@ func Login(c *Context, r *LoginRequest) (*LoginResponse, error) {
 	}
 
 	token, err := serviceJwt.CreateToken(serviceJwt.CustomClaims{
-		UserId:   "0001",
-		UserName: "admin",
+		UserId: 1,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresAt,
 		},
@@ -48,10 +46,6 @@ type InfoResponse struct {
 }
 
 func Info(c *Context) (*InfoResponse, error) {
-	ctx := c.GetCtx()
-	span, _ := opentracing.StartSpanFromContext(ctx, "user.Info")
-	span.Finish()
-
 	return &InfoResponse{
 		UserName: c.GetString("user_name"),
 		Age:      11,

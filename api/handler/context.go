@@ -15,16 +15,12 @@ import (
 
 type Context struct {
 	*gin.Context
+	UserId int64
 }
 
 // 返回日志ctx
 func (c *Context) GetCtx() context.Context {
-	otx, exist := c.Get("ctx")
-	if !exist {
-		return logx.NewCtx("unknow requestid")
-	}
-
-	return otx.(context.Context)
+	return GetCtx(c.Context)
 }
 
 // controller修饰器返回gin.HandlerFunc
@@ -43,6 +39,7 @@ func WrapF(f interface{}) gin.HandlerFunc {
 
 		ctx := &Context{
 			Context: ginc,
+			UserId:  GetUserId(ginc),
 		}
 		args[0] = reflect.ValueOf(ctx)
 
@@ -160,6 +157,17 @@ func _paramsValidate(r any) error {
 }
 
 func GetCtx(ginc *gin.Context) context.Context {
-	t, _ := ginc.Get("ctx")
+	t, exist := ginc.Get("ctx")
+	if !exist {
+		return context.Background()
+	}
 	return t.(context.Context)
+}
+
+func GetUserId(ginc *gin.Context) int64 {
+	return ginc.GetInt64("user_id")
+}
+
+func GetRequestId(ginc *gin.Context) string {
+	return ginc.GetString("request_id")
 }
