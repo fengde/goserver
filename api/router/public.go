@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 无需登录即可访问的url在这里注册
 func public(r *gin.Engine) {
 
 	g := r.Group("/")
