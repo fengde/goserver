@@ -12,7 +12,8 @@ func privateRbac(r *gin.Engine) {
 	g := r.Group("/")
 
 	g.Use(middleware.Jwt()).Use(middleware.Rbac())
-
+	// 角色新增
 	POST(g, "/api/role/new", handler.NewRole)
+	// 角色移除
 	POST(g, "/api/role/delete", handler.DeleteRole)
 }

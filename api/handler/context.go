@@ -109,10 +109,10 @@ func _out(ginc *gin.Context, code int, status string, message string, data any) 
 		data = map[string]any{}
 	}
 	ginH := gin.H{
-		"status":       status,
-		"message":      message,
-		"data":         data,
-		"x-request-id": ginc.GetString("x-request-id"),
+		"status":     status,
+		"message":    message,
+		"data":       data,
+		"request_id": GetRequestId(ginc),
 	}
 	ginc.Set("out", jsonx.MarshalToStringNoErr(ginH))
 	ginc.JSON(code, ginH)
