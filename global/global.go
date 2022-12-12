@@ -100,10 +100,6 @@ func Init() error {
 		if err != nil {
 			return err
 		}
-		err = Enforcer.LoadPolicy()
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil
